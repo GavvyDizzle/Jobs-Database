@@ -56,6 +56,14 @@ int compareJobs(Job *j1, Job *j2) {
 }
 
 /**
+ * Determines what job should come before another by checking the state
+ * @return value < 0 if the first job takes precedence, value > 0 if the second job takes precedence, value = 0 if they are equal
+ */
+int compareJobsByState(Job *j1, Job *j2) {
+    return strcasecmp(j1->state, j2->state);
+}
+
+/**
  * Nicely prints out a job.
  */
 void printJob(Job *j) {

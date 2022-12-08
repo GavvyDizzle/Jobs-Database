@@ -2,8 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "bt.h"
+#include "BTNodeQueue.h"
 
+BinaryTree* createBinaryTree() {
+    BinaryTree* bt = malloc(sizeof(BinaryTree));
+    bt->height = 0;
+    return bt;
+}
 
+/**
+ * Creates a new BTNode and makes the data the first element in its LinkedList
+ */
 BTNode* createBTNode(Job* data) {
     BTNode* node = malloc(sizeof(BTNode));
     node->data = data;
@@ -12,37 +21,43 @@ BTNode* createBTNode(Job* data) {
     return node;
 }
 
-BinaryTree* createBinaryTree() {
-    BinaryTree* bt = malloc(sizeof(BinaryTree));
-    return bt;
-}
-
-void initializeBinaryTree() {
-    ftable[PREORDER] = TreePreOrder;
-    ftable[INORDER] = BinaryTreeInOrder;
-    ftable[POSTORDER] = BinaryTreePostOrder;
-}
-
 void deleteBinaryTree(BinaryTree* bt) {
-    //TODO - Free all nodes
+    if (bt->root != NULL) deleteNode(bt->root);
+    free(bt);
 }
 
+/**
+ * Recursively deletes all of this node's children then itself
+ */
+void deleteNode(BTNode* node) {
+    if (node->left != NULL) deleteNode(node->left);
+    if (node->right != NULL) deleteNode(node->right);
+    free(node);
+}
+
+/**
+ * Puts nodes in the tree. Nodes that are equal (compares state) will be contained in a LinkedList in a single node.
+ */
 void insertInBinaryTree(BinaryTree* bt, Job* data) {
     BTNode* newNode = createBTNode(data);
     if (bt->root == NULL) { // Make the node the root if it is the first one
         bt->root = newNode;
+        bt->height = 1;
         return;
     }
 
     BTNode* curr = bt->root;
 
+    int currHeight = 1;
     while (!isLeaf(curr)) { // Loop to determine the new node's parent
-        if (compareJobs(curr->data, data) >= 0) {
+        if (compareJobsByState(curr->data, data) >= 0) {
             curr = curr->right;
         }
         else {
             curr = curr->left;
         }
+
+        currHeight++;
     }
 
     // Insert to the right or left of the parent node
@@ -52,29 +67,76 @@ void insertInBinaryTree(BinaryTree* bt, Job* data) {
     else {
         curr->left = newNode;
     }
+
+    if (currHeight + 1 > bt->height) bt->height = currHeight + 1;
 }
 
-char* toStringBinaryTree(BinaryTree* bt, TreeOrder order) {
-    if (bt->root != NULL) {
-        char* printbuf = (char*) malloc( bt->size*3 );
-        // call traversals with printbuf
+Job* getJobByTitle(BinaryTree* bt, char* jobTitle) {
+    if (bt->root == NULL) return NULL;
 
-        return(printbuf);
+    BTNodeQueue* queue = createQueue();
+    insertQueue(queue, bt->root);
+
+    bool foundMatch = false;
+    BTNode* popped;
+    while (!isQueueEmpty(queue)) {
+        popped = popQueue(queue);
+        if (strcasecmp(popped->data->jobTitle, jobTitle) == 0) {
+            foundMatch = true;
+            break;
+        }
+
+        insertQueue(queue, popped->left);
+        insertQueue(queue, popped->right);
     }
-    else
-        return((char*) NULL);
+
+    deleteQueue(queue);
+
+    if (foundMatch) {
+        return popped->data;
+    }
+    return NULL;
 }
 
+/**
+ * Prints out the binary tree using the following format (spaces indicate no node)
+ * 0
+ * 1-2
+ * 3-4-5-6
+ * 7-8-9- 11-12- -14
+ */
+void printBinaryTree(BinaryTree* bt) {
+    if (bt->root == NULL) {
+        printf("Empty tree\n");
+        return;
+    }
 
-void BinaryTreeInOrder(BTNode* bt, char* p) {
+    BTNodeQueue* queue = createQueue();
+    insertQueue(queue, bt->root);
+
+    BTNode* popped;
+    while (!isQueueEmpty(queue)) {
+        for (int i = 0; i < queue->length-1; i++) { // loop through enough times to print each node at this level
+            popped = popQueue(queue);
+            printf("%s-", popped->data->state);
+
+            insertQueue(queue, popped->left);
+            insertQueue(queue, popped->right);
+        }
+
+        popped = popQueue(queue); // Last node at this level does not need a separator character
+        printf("%s", popped->data->state);
+
+        insertQueue(queue, popped->left);
+        insertQueue(queue, popped->right);
+    }
+
+    deleteQueue(queue);
 }
 
-void BinaryTreePreOrder(BTNode* bt, char* p) {
-}
-
-void BinaryTreePostOrder(BTNode* bt, char* p) {
-}
-
+/**
+ * No children means the node is a leaf
+ */
 bool isLeaf(BTNode* node) {
     return node->left == NULL && node->right == NULL;
 }

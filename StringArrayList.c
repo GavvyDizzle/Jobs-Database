@@ -192,3 +192,13 @@ void printSAL(StringArrayList *arr) {
     printf("%s", arr->arr[arr->length-1]);
     printf("]\n");
 }
+
+/**
+ * Prints out the list to the file with commas between elements (no spaces). Ends with a new line
+ */
+void printSALToFile(StringArrayList *arr, FILE* fp) {
+    for (int i = 0; i < arr->length-1; i++) {
+        fprintf(fp, "%s, ", arr->arr[i]);
+    }
+    fprintf(fp, "%s\n", arr->arr[arr->length-1]);
+}

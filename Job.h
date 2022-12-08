@@ -36,6 +36,14 @@ void deleteJob(Job *j);
 int compareJobs(Job *j1, Job *j2);
 
 /**
+ * Compares two jobs to determine the order when sorting
+ * @param j1 The first job
+ * @param j2 The second job
+ * @return value < 0 if the first job takes precedence, value > 0 if the second job takes precedence, value = 0 if they are equal
+ */
+int compareJobsByState(Job *j1, Job *j2);
+
+/**
  * Prints out the job
  * @param j The job
  */

@@ -104,4 +104,11 @@ bool containsExactListMatchSAL(StringArrayList *arr, StringArrayList *o);
  */
 void printSAL(StringArrayList *arr);
 
+/**
+ * Prints the list to the file
+ * @param arr The list
+ * @param fp The file
+ */
+void printSALToFile(StringArrayList *arr, FILE* fp);
+
 #endif //CS203_PROJECT1_STRINGARRAYLIST_H

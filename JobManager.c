@@ -633,6 +633,23 @@ void printJobs(JobArrayList *arr) {
     printJob(getJAL(arr, arr->length - 1));
 }
 
+void outputJobs(JobArrayList *arr, FILE* fp) {
+    Job *j;
+    for (int i = 0; i < arr->length; i++) {
+        j = getJAL(arr, i);
+
+        fprintf(fp, "%s\n", j->jobTitle);
+        fprintf(fp, "%s\n", j->companyName);
+        fprintf(fp, "%s\n", j->city);
+        fprintf(fp, "%s\n", j->state);
+        fprintf(fp, "%d %d\n", j->minSalary, j->maxSalary);
+        fprintf(fp, "%s\n", j->industry);
+        printSALToFile(j->requiredSkills, fp);
+        printSALToFile(j->desiredSkills, fp);
+        fprintf(fp, "%s\n\n", j->email);
+    }
+}
+
 /**
  * Does the same as <string.h> strstr() function, but ignores case.
  * Written by Clifford (https://stackoverflow.com/questions/27303062/strstr-function-like-that-ignores-upper-or-lower-case)

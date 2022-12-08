@@ -145,6 +145,12 @@ void matchDesiredSkills(LinkedList *ll, char *str, bool exactMatch);
 void printJobs(JobArrayList *arr);
 
 /**
+ * Prints all jobs to a file
+ * @param fp The file
+ */
+void outputJobs(JobArrayList *arr, FILE* fp);
+
+/**
  * Works just like C's strstr() but ignores case.
  * @param haystack The string to parse
  * @param needle The string to look for
