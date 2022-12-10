@@ -6,7 +6,9 @@
 
 BinaryTree* createBinaryTree() {
     BinaryTree* bt = malloc(sizeof(BinaryTree));
+    bt->root = NULL;
     bt->height = 0;
+    bt->size = 0;
     return bt;
 }
 
@@ -32,6 +34,7 @@ void deleteBinaryTree(BinaryTree* bt) {
 void deleteNode(BTNode* node) {
     if (node->left != NULL) deleteNode(node->left);
     if (node->right != NULL) deleteNode(node->right);
+    deleteJob(node->data);
     free(node);
 }
 
@@ -43,6 +46,7 @@ void insertInBinaryTree(BinaryTree* bt, Job* data) {
     if (bt->root == NULL) { // Make the node the root if it is the first one
         bt->root = newNode;
         bt->height = 1;
+        bt->size = 1;
         return;
     }
 
@@ -51,9 +55,11 @@ void insertInBinaryTree(BinaryTree* bt, Job* data) {
     int currHeight = 1;
     while (!isLeaf(curr)) { // Loop to determine the new node's parent
         if (compareJobsByState(curr->data, data) >= 0) {
+            if (curr->right == NULL) break;
             curr = curr->right;
         }
         else {
+            if (curr->left == NULL) break;
             curr = curr->left;
         }
 
@@ -61,7 +67,7 @@ void insertInBinaryTree(BinaryTree* bt, Job* data) {
     }
 
     // Insert to the right or left of the parent node
-    if (compareJobs(curr->data, data) >= 0) {
+    if (compareJobsByState(curr->data, data) >= 0) {
         curr->right = newNode;
     }
     else {
@@ -69,6 +75,7 @@ void insertInBinaryTree(BinaryTree* bt, Job* data) {
     }
 
     if (currHeight + 1 > bt->height) bt->height = currHeight + 1;
+    bt->size++;
 }
 
 Job* getJobByTitle(BinaryTree* bt, char* jobTitle) {
@@ -116,7 +123,8 @@ void printBinaryTree(BinaryTree* bt) {
 
     BTNode* popped;
     while (!isQueueEmpty(queue)) {
-        for (int i = 0; i < queue->length-1; i++) { // loop through enough times to print each node at this level
+        int l = queue->length-1;
+        for (int i = 0; i < l; i++) { // loop through enough times to print each node at this level
             popped = popQueue(queue);
             printf("%s-", popped->data->state);
 
@@ -125,7 +133,7 @@ void printBinaryTree(BinaryTree* bt) {
         }
 
         popped = popQueue(queue); // Last node at this level does not need a separator character
-        printf("%s", popped->data->state);
+        printf("%s\n", popped->data->state);
 
         insertQueue(queue, popped->left);
         insertQueue(queue, popped->right);
@@ -139,4 +147,30 @@ void printBinaryTree(BinaryTree* bt) {
  */
 bool isLeaf(BTNode* node) {
     return node->left == NULL && node->right == NULL;
+}
+
+JobArrayList* getListFromTree(BinaryTree* bt) {
+    JobArrayList* jal = createJobArrayList();
+    if (bt->root == NULL) return jal;
+
+    BTNodeQueue* queue = createQueue();
+    insertQueue(queue, bt->root);
+
+    BTNode* popped;
+    while (!isQueueEmpty(queue)) {
+        popped = popQueue(queue);
+        insertJAL(jal, popped->data);
+        insertQueue(queue, popped->left);
+        insertQueue(queue, popped->right);
+    }
+
+    deleteQueue(queue);
+
+    return jal;
+}
+
+JobArrayList* getSortedListFromTree(BinaryTree* bt) {
+    JobArrayList* jal = getListFromTree(bt);
+    sortJAL(jal);
+    return jal;
 }

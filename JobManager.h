@@ -6,12 +6,13 @@
 #include "StringArrayList.h"
 #include "Job.h"
 #include "LinkedList.h"
+#include "bt.h"
 
 /**
  * Creates all LinkedList indexes.
- * @param jm The list of jobs to index.
+ * @param bt The tree of jobs to index.
  */
-void loadJobIndexes(JobArrayList *jm);
+void loadJobIndexes(BinaryTree *bt);
 
 /**
  * Frees all LinkedList indexes.
@@ -20,22 +21,16 @@ void freeIndexes();
 
 /**
  * Copies all jobs to a LinkedList
- * @param jm The list to copy
+ * @param bt The tree to copy
  * @return A LinkedList of jobs
  */
-LinkedList* getJobLinkedList(JobArrayList *jm);
+LinkedList* getJobLinkedList(BinaryTree *bt);
 
 /**
  * Loads all jobs from the text file
- * @param jm The list to save the jobs to
+ * @param bt The tree to save the jobs to
  */
-void loadJobs(JobArrayList *jm);
-
-/**
- * Loads all job indexes
- * @param jm The list of jobs to index
- */
-void loadJobIndexes(JobArrayList *jm);
+void loadJobs(BinaryTree *bt);
 
 /**
  * Creates an ArrayList from a char* of comma separated values
@@ -140,15 +135,16 @@ void matchDesiredSkills(LinkedList *ll, char *str, bool exactMatch);
 
 /**
  * Prints all jobs
- * @param arr The list of jobs
+ * @param bt The BinaryTree
  */
-void printJobs(JobArrayList *arr);
+void printJobs(BinaryTree *bt);
 
 /**
  * Prints all jobs to a file
+ * @param bt The BinaryTree
  * @param fp The file
  */
-void outputJobs(JobArrayList *arr, FILE* fp);
+void outputJobs(BinaryTree *bt, FILE* fp);
 
 /**
  * Works just like C's strstr() but ignores case.

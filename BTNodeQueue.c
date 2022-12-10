@@ -23,8 +23,10 @@ void doubleSizeQueue(BTNodeQueue *queue) {
     queue->arr = realloc(queue->arr, sizeof(BTNode) * queue->queueSize);
 }
 
-// Inserts jobs at the back of the array
-void insertQueue(BTNodeQueue* queue, BTNode * data) {
+// Inserts jobs at the back of the array if the node is non-null
+void insertQueue(BTNodeQueue* queue, BTNode* data) {
+    if (data == NULL) return;
+
     if (queue->length == queue->queueSize) {
         doubleSizeQueue(queue);
     }
@@ -42,7 +44,7 @@ BTNode* popQueue(BTNodeQueue* queue) {
     BTNode* popped = *(queue->arr);
 
     for (int i = 0; i < queue->length - 1; i++) {
-        queue->arr[0] = queue->arr[i+1];
+        queue->arr[i] = queue->arr[i+1];
     }
     queue->length--;
 

@@ -2,8 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "JobManager.h"
+#include "bt.h"
 
-JobArrayList *jal;
+BinaryTree* bt;
 bool exactMatching = false;
 
 /**
@@ -42,7 +43,7 @@ void runSearch() {
     printf("Note: Leaving any input blank ignores that field\n");
 
     char input[256];
-    LinkedList *ll = getJobLinkedList(jal);
+    LinkedList *ll = getJobLinkedList(bt);
 
     printf("Enter job title(s): ");
     gets(input);
@@ -127,7 +128,7 @@ void runListCommand(char cmd) {
         return;
     }
 
-    LinkedList *ll = getJobLinkedList(jal);
+    LinkedList *ll = getJobLinkedList(bt);
     char input[256];
     gets(input);
 
@@ -263,7 +264,7 @@ void runModifyCommand() {
     printf("Note: Leaving any input blank ignores that field\n");
 
     char input[256];
-    LinkedList *ll = getJobLinkedList(jal);
+    LinkedList *ll = getJobLinkedList(bt);
 
     printf("Enter job title(s): ");
     gets(input);
@@ -301,7 +302,7 @@ void runModifyCommand() {
     }
 
     // Only one job found
-    Job *mod = ll->head;
+    Job *mod = ll->head->data;
 
     printf("\n----------(Modify current job? (y/n) )----------\n");
     printJob(mod);
@@ -385,7 +386,7 @@ void runModifyCommand() {
     }
 
     if (input[0] == 'y') {
-        printf("Your job has been successfully modified to the database\n");
+        printf("Your job has been successfully modified in the database\n");
         mod->city = copy->city;
         mod->state = copy->state;
         mod->minSalary = copy->minSalary;
@@ -411,7 +412,7 @@ void runRemoveCommand() {
     printf("Note: Leaving any input blank ignores that field\n");
 
     char input[256];
-    LinkedList *ll = getJobLinkedList(jal);
+    LinkedList *ll = getJobLinkedList(bt);
 
     printf("Enter job title(s): ");
     gets(input);
@@ -461,7 +462,7 @@ void runRemoveCommand() {
     }
 
     // Only one job found
-    Job *rem = ll->head;
+    Job *rem = ll->head->data;
 
     printf("\n----------(Delete current job? (y/n) )----------\n");
     printJob(rem);
@@ -498,7 +499,7 @@ void runWriteCommand() {
     }
 
     FILE *fp = fopen(input, "w+");
-    outputJobs(jal, fp);
+    outputJobs(bt, fp);
     fclose(fp);
     printf("All jobs successfully written to %s\n", input);
 }
@@ -546,7 +547,7 @@ void run() {
         }
         else if (topCommand[0] == 'p') {
             printf("-----------(All Job Listings)-----------\n");
-            printJobs(jal);
+            printJobs(bt);
             printf("-----------(All Job Listings)-----------\n");
         }
         else if (topCommand[0] == 'r') {
@@ -577,10 +578,10 @@ void run() {
 }
 
 int main() {
-    jal = createJobArrayList();
-    loadJobs(jal);
+    bt = createBinaryTree();
+    loadJobs(bt);
 
     run();
     freeIndexes();
-    deleteJobArrayList(jal);
+    deleteBinaryTree(bt);
 }

@@ -3,6 +3,7 @@
 
 #include "Job.h"
 #include "LinkedList.h"
+#include "JobArrayList.h"
 
 typedef struct BTNode_struct {
     Job* data;
@@ -13,6 +14,7 @@ typedef struct BTNode_struct {
 typedef struct BinaryTree_struct {
     BTNode *root;
     int height;
+    int size;
 } BinaryTree;
 
 /**
@@ -53,25 +55,24 @@ void insertInBinaryTree(BinaryTree* bt, Job* data);
 void printBinaryTree(BinaryTree* bt);
 
 /**
- * Creates an array of BTNode pointers in level order for the BinaryTree
- * @param bt The BinaryTree
- * @return An array of BTNode pointers
- */
-BTNode* getLevelOrder(BinaryTree* bt);
-
-/**
- * Inserts all of this node's child nodes into the array
- * @param arr The BTNode array
- * @param node The node to add the children of
- * @param nodeIndex The index of the node
- */
-void insertChildren(BTNode* arr, BTNode* node, int nodeIndex);
-
-/**
  * Determines if this node is a leaf
  * @param node The node
  * @return True if this node is a leaf
  */
 bool isLeaf(BTNode* node);
+
+/**
+ * Creates a list of jobs from this tree
+ * @param bt The BinaryTree
+ * @return A JobArrayList representing this tree
+ */
+JobArrayList* getListFromTree(BinaryTree* bt);
+
+/**
+ * Creates a sorted list of jobs from this tree
+ * @param bt The BinaryTree
+ * @return A sorted JobArrayList representing this tree
+ */
+JobArrayList* getSortedListFromTree(BinaryTree* bt);
 
 #endif //CS203_PROJECT1_BT_H

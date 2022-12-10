@@ -17,7 +17,7 @@ LinkedList *engineerJobTitleIndex, *softwareJobTitleIndex, *developerJobTitleInd
  * Creates indexes for industry, city, and job title.
  * @param jm
  */
-void loadJobIndexes(JobArrayList *jm) {
+void loadJobIndexes(BinaryTree *bt) {
     educationIndustryIndex = createLinkedList();
     softwareIndustryIndex = createLinkedList();
     servicesIndustryIndex = createLinkedList();
@@ -38,8 +38,10 @@ void loadJobIndexes(JobArrayList *jm) {
     seniorJobTitleIndex = createLinkedList();
     dataJobTitleIndex = createLinkedList();
 
-    for (int i = 0; i < jm->length; i++) {
-        Job *j = getJAL(jm, i);
+    JobArrayList* jal = getSortedListFromTree(bt);
+
+    for (int i = 0; i < jal->length; i++) {
+        Job *j = getJAL(jal, i);
         if (stristr(j->industry, "education") != NULL) insertLinkedList(educationIndustryIndex,j);
         if (stristr(j->industry, "software") != NULL) insertLinkedList(softwareIndustryIndex,j);
         if (stristr(j->industry, "services") != NULL) insertLinkedList(servicesIndustryIndex,j);
@@ -60,6 +62,7 @@ void loadJobIndexes(JobArrayList *jm) {
         if (stristr(j->jobTitle, "senior") != NULL) insertLinkedList(seniorJobTitleIndex,j);
         if (stristr(j->jobTitle, "data") != NULL) insertLinkedList(dataJobTitleIndex,j);
     }
+    deleteJobArrayListShallow(jal);
 }
 
 void freeIndexes() {
@@ -99,13 +102,15 @@ char* removeEnterChar(char* str) {
 /**
  * Copies all jobs to a LinkedList, keeping their order intact.
  */
-LinkedList* getJobLinkedList(JobArrayList *jm) {
+LinkedList* getJobLinkedList(BinaryTree *bt) {
     LinkedList *ll = createLinkedList();
 
-    for (int i = 0; i < jm->length; i++) {
-        insertLinkedList(ll, getJAL(jm, i));
+    JobArrayList* jal = getSortedListFromTree(bt);
+    for (int i = 0; i < jal->length; i++) {
+        insertLinkedList(ll, getJAL(jal, i));
     }
 
+    deleteJobArrayListShallow(jal);
     return ll;
 }
 
@@ -114,7 +119,7 @@ LinkedList* getJobLinkedList(JobArrayList *jm) {
  * After loading the file, it loads all jobs in the file until the end of the file is reached.
  * After loading all jobs, the jobs are sorted.
  */
-void loadJobs(JobArrayList *jm) {
+void loadJobs(BinaryTree *bt) {
     FILE *f = fopen("jobs.txt", "r");
     char* input = malloc(sizeof(char) * 256);
 
@@ -164,7 +169,7 @@ void loadJobs(JobArrayList *jm) {
         fgets(input, sizeof(char) * 256, f);
         j->email = removeEnterChar(input);
 
-        insertJAL(jm, j);
+        insertInBinaryTree(bt, j);
 
         input = malloc(sizeof(char) * 256);
         fgets(input, sizeof(char) * 2, f); // blank lines between job listings
@@ -173,8 +178,7 @@ void loadJobs(JobArrayList *jm) {
     free(input);
     fclose(f);
 
-    sortJAL(jm);
-    loadJobIndexes(jm);
+    loadJobIndexes(bt);
 }
 
 /**
@@ -625,7 +629,9 @@ void matchDesiredSkills(LinkedList *ll, char *str, bool exactMatch) {
 /**
  * Prints all jobs to the screen with a blank line between each job.
  */
-void printJobs(JobArrayList *arr) {
+void printJobs(BinaryTree *bt) {
+    JobArrayList* arr = getSortedListFromTree(bt);
+
     for (int i = 0; i < arr->length - 1; i++) {
         printJob(getJAL(arr, i));
         printf("\n");
@@ -633,10 +639,11 @@ void printJobs(JobArrayList *arr) {
     printJob(getJAL(arr, arr->length - 1));
 }
 
-void outputJobs(JobArrayList *arr, FILE* fp) {
+void outputJobs(BinaryTree *bt, FILE* fp) {
+    JobArrayList* jal = getSortedListFromTree(bt);
     Job *j;
-    for (int i = 0; i < arr->length; i++) {
-        j = getJAL(arr, i);
+    for (int i = 0; i < jal->length; i++) {
+        j = getJAL(jal, i);
 
         fprintf(fp, "%s\n", j->jobTitle);
         fprintf(fp, "%s\n", j->companyName);
@@ -648,6 +655,7 @@ void outputJobs(JobArrayList *arr, FILE* fp) {
         printSALToFile(j->desiredSkills, fp);
         fprintf(fp, "%s\n\n", j->email);
     }
+    deleteJobArrayListShallow(jal);
 }
 
 /**

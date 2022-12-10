@@ -22,6 +22,12 @@ JobArrayList* createJobArrayList();
 void deleteJobArrayList(JobArrayList *arr);
 
 /**
+ * Deletes a JobArrayList without freeing the jobs
+ * @param arr The JobArrayList
+ */
+void deleteJobArrayListShallow(JobArrayList *arr);
+
+/**
  * Inserts an element to the end of the ArrayList
  * @param arr The list
  * @param data The element to add

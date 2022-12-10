@@ -17,6 +17,11 @@ void deleteJobArrayList(JobArrayList *arr) {
     free(arr);
 }
 
+void deleteJobArrayListShallow(JobArrayList *arr) {
+    free(arr->arr);
+    free(arr);
+}
+
 /**
  * Doubles the size of the ArrayList so it can hold more elements
  */
