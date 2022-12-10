@@ -116,6 +116,19 @@ void removeFromJAL(JobArrayList *arr, int index) {
 }
 
 /**
+ * Removes the Job that matches the one provided.
+ * If the Job is not in the list, nothing will be removed.
+ */
+void removeDataFromJAL(JobArrayList *arr, Job* data) {
+    for (int i = 0; i < arr->length; i++) {
+        if (getJAL(arr, i) == data) {
+            removeFromJAL(arr, i);
+            return;
+        }
+    }
+}
+
+/**
  * Prints out every Job in the list.
  */
 void printJAL(JobArrayList *arr) {

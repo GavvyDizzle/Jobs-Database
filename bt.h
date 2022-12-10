@@ -48,6 +48,21 @@ void deleteNode(BTNode* node);
  */
 void insertInBinaryTree(BinaryTree* bt, Job* data);
 
+
+/**
+ * Places an element into its correct sorted position
+ * @param bt The BinaryTree
+ * @param data The element to re-sort
+ */
+void modifyElementBinaryTree(BinaryTree* bt, Job* data);
+
+/**
+ * Removes an element from the tree
+ * @param bt The BinaryTree
+ * @param data The element to remove
+ */
+void removeBinaryTree(BinaryTree* bt, Job* data);
+
 /**
  * Prints out the BinaryTree in level order format
  * @param bt The BinaryTree

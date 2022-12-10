@@ -181,6 +181,84 @@ void loadJobs(BinaryTree *bt) {
     loadJobIndexes(bt);
 }
 
+// Finds indexing lists to add to then places the new job in order
+void addNewJob(BinaryTree* bt, Job* j) {
+    insertInBinaryTree(bt, j);
+
+    if (stristr(j->industry, "education") != NULL) insertInOrderLinkedList(educationIndustryIndex,j);
+    if (stristr(j->industry, "software") != NULL) insertInOrderLinkedList(softwareIndustryIndex,j);
+    if (stristr(j->industry, "services") != NULL) insertInOrderLinkedList(servicesIndustryIndex,j);
+    if (stristr(j->industry, "information") != NULL) insertInOrderLinkedList(informationIndustryIndex,j);
+    if (stristr(j->industry, "technology") != NULL) insertInOrderLinkedList(technologyIndustryIndex,j);
+    if (stristr(j->industry, "healthcare") != NULL) insertInOrderLinkedList(healthcareIndustryIndex,j);
+
+    if (stristr(j->city, "new york") != NULL) insertInOrderLinkedList(newYorkCityIndex,j);
+    if (stristr(j->city, "easton") != NULL) insertInOrderLinkedList(eastonCityIndex,j);
+    if (stristr(j->city, "boston") != NULL) insertInOrderLinkedList(bostonCityIndex,j);
+    if (stristr(j->city, "seattle") != NULL) insertInOrderLinkedList(seattleCityIndex,j);
+    if (stristr(j->city, "philadelphia") != NULL) insertInOrderLinkedList(philadelphiaCityIndex,j);
+
+    if (stristr(j->jobTitle, "engineer") != NULL) insertInOrderLinkedList(engineerJobTitleIndex,j);
+    if (stristr(j->jobTitle, "software") != NULL) insertInOrderLinkedList(softwareJobTitleIndex,j);
+    if (stristr(j->jobTitle, "developer") != NULL) insertInOrderLinkedList(developerJobTitleIndex,j);
+    if (stristr(j->jobTitle, "analyst") != NULL) insertInOrderLinkedList(analystJobTitleIndex,j);
+    if (stristr(j->jobTitle, "senior") != NULL) insertInOrderLinkedList(seniorJobTitleIndex,j);
+    if (stristr(j->jobTitle, "data") != NULL) insertInOrderLinkedList(dataJobTitleIndex,j);
+}
+
+// Finds indexing lists to modify then handles modification
+void modifyJob(BinaryTree* bt, Job* j) {
+    modifyElementBinaryTree(bt, j);
+
+    if (stristr(j->industry, "education") != NULL) modifyElementLinkedList(educationIndustryIndex,j);
+    if (stristr(j->industry, "software") != NULL) modifyElementLinkedList(softwareIndustryIndex,j);
+    if (stristr(j->industry, "services") != NULL) modifyElementLinkedList(servicesIndustryIndex,j);
+    if (stristr(j->industry, "information") != NULL) modifyElementLinkedList(informationIndustryIndex,j);
+    if (stristr(j->industry, "technology") != NULL) modifyElementLinkedList(technologyIndustryIndex,j);
+    if (stristr(j->industry, "healthcare") != NULL) modifyElementLinkedList(healthcareIndustryIndex,j);
+
+    if (stristr(j->city, "new york") != NULL) modifyElementLinkedList(newYorkCityIndex,j);
+    if (stristr(j->city, "easton") != NULL) modifyElementLinkedList(eastonCityIndex,j);
+    if (stristr(j->city, "boston") != NULL) modifyElementLinkedList(bostonCityIndex,j);
+    if (stristr(j->city, "seattle") != NULL) modifyElementLinkedList(seattleCityIndex,j);
+    if (stristr(j->city, "philadelphia") != NULL) modifyElementLinkedList(philadelphiaCityIndex,j);
+
+    if (stristr(j->jobTitle, "engineer") != NULL) modifyElementLinkedList(engineerJobTitleIndex,j);
+    if (stristr(j->jobTitle, "software") != NULL) modifyElementLinkedList(softwareJobTitleIndex,j);
+    if (stristr(j->jobTitle, "developer") != NULL) modifyElementLinkedList(developerJobTitleIndex,j);
+    if (stristr(j->jobTitle, "analyst") != NULL) modifyElementLinkedList(analystJobTitleIndex,j);
+    if (stristr(j->jobTitle, "senior") != NULL) modifyElementLinkedList(seniorJobTitleIndex,j);
+    if (stristr(j->jobTitle, "data") != NULL) modifyElementLinkedList(dataJobTitleIndex,j);
+}
+
+// Only need to remove the job because order will be preserved
+void removeJob(BinaryTree* bt, Job* j) {
+    removeBinaryTree(bt, j);
+
+    if (stristr(j->industry, "education") != NULL) removeDataFromLinkedList(educationIndustryIndex,j);
+    if (stristr(j->industry, "software") != NULL) removeDataFromLinkedList(softwareIndustryIndex,j);
+    if (stristr(j->industry, "services") != NULL) removeDataFromLinkedList(servicesIndustryIndex,j);
+    if (stristr(j->industry, "information") != NULL) removeDataFromLinkedList(informationIndustryIndex,j);
+    if (stristr(j->industry, "technology") != NULL) removeDataFromLinkedList(technologyIndustryIndex,j);
+    if (stristr(j->industry, "healthcare") != NULL) removeDataFromLinkedList(healthcareIndustryIndex,j);
+
+    if (stristr(j->city, "new york") != NULL) removeDataFromLinkedList(newYorkCityIndex,j);
+    if (stristr(j->city, "easton") != NULL) removeDataFromLinkedList(eastonCityIndex,j);
+    if (stristr(j->city, "boston") != NULL) removeDataFromLinkedList(bostonCityIndex,j);
+    if (stristr(j->city, "seattle") != NULL) removeDataFromLinkedList(seattleCityIndex,j);
+    if (stristr(j->city, "philadelphia") != NULL) removeDataFromLinkedList(philadelphiaCityIndex,j);
+
+    if (stristr(j->jobTitle, "engineer") != NULL) removeDataFromLinkedList(engineerJobTitleIndex,j);
+    if (stristr(j->jobTitle, "software") != NULL) removeDataFromLinkedList(softwareJobTitleIndex,j);
+    if (stristr(j->jobTitle, "developer") != NULL) removeDataFromLinkedList(developerJobTitleIndex,j);
+    if (stristr(j->jobTitle, "analyst") != NULL) removeDataFromLinkedList(analystJobTitleIndex,j);
+    if (stristr(j->jobTitle, "senior") != NULL) removeDataFromLinkedList(seniorJobTitleIndex,j);
+    if (stristr(j->jobTitle, "data") != NULL) removeDataFromLinkedList(dataJobTitleIndex,j);
+
+    deleteJob(j);
+}
+
+
 /**
  * Creates an StringArrayList based on comma separated values.
  * If no comma exists, the list will contain a single element.
@@ -632,11 +710,18 @@ void matchDesiredSkills(LinkedList *ll, char *str, bool exactMatch) {
 void printJobs(BinaryTree *bt) {
     JobArrayList* arr = getSortedListFromTree(bt);
 
-    for (int i = 0; i < arr->length - 1; i++) {
-        printJob(getJAL(arr, i));
-        printf("\n");
+    if (arr->length > 0) {
+        for (int i = 0; i < arr->length - 1; i++) {
+            printJob(getJAL(arr, i));
+            printf("\n");
+        }
+        printJob(getJAL(arr, arr->length - 1));
     }
-    printJob(getJAL(arr, arr->length - 1));
+    else {
+        printf("Database empty\n");
+    }
+
+    deleteJobArrayListShallow(arr);
 }
 
 void outputJobs(BinaryTree *bt, FILE* fp) {

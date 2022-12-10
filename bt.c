@@ -78,6 +78,111 @@ void insertInBinaryTree(BinaryTree* bt, Job* data) {
     bt->size++;
 }
 
+/**
+ * Removes the desired element and inserts it back into the tree
+ */
+void modifyElementBinaryTree(BinaryTree* bt, Job* data) {
+    removeBinaryTree(bt, data);
+    insertInBinaryTree(bt, data);
+}
+
+/**
+ * Finds the node with the smallest value originating from this node
+ *//*
+BTNode* minValueNode(BTNode* node)
+{
+    BTNode* curr = node;
+
+    // loop down to find the leftmost leaf
+    while (curr != NULL && curr->left != NULL) {
+        curr = curr->left;
+    }
+
+    return curr;
+}
+
+*//**
+ * Removes the job from the tree and handles all balancing
+ *//*
+BTNode* removeNode(BTNode* root, Job* data) {
+    // base case
+    if (root == NULL)
+        return root;
+
+    // If the key to be deleted
+    // is smaller than the root's
+    // key, then it lies in left subtree
+    if (compareJobsByState(data, root->data) < 0)
+        root->left = removeNode(root->left, data);
+
+        // If the key to be deleted
+        // is greater than the root's
+        // key, then it lies in right subtree
+    else if (compareJobsByState(data, root->data))
+        root->right = removeNode(root->right, data);
+
+        // if key is same as root's key,
+        // then This is the node
+        // to be deleted
+    else {
+        // node with only one child or no child
+        if (root->left == NULL) {
+            BTNode* temp = root->right;
+            free(root);
+            return temp;
+        }
+        else if (root->right == NULL) {
+            BTNode* temp = root->left;
+            free(root);
+            return temp;
+        }
+
+        // node with two children:
+        // Get the inorder successor
+        // (smallest in the right subtree)
+        BTNode* temp = minValueNode(root->right);
+
+        // successor's content to this node
+        root->data = temp->data;
+
+        // Delete the inorder successor
+        root->right = removeNode(root->right, temp->data);
+    }
+    return root;
+}*/
+
+ // Frees BTNodes without deleting the job
+void deleteNodeShallow(BTNode* node) {
+   if (node->left != NULL) deleteNodeShallow(node->left);
+   if (node->right != NULL) deleteNodeShallow(node->right);
+   free(node);
+}
+
+/**
+ * Removes the desired element from the tree and fixes the structure of the tree.
+ * Does so by removing the job from the list of jobs then remaking the tree.
+ * This is inefficient, but removing is annoying :-/
+ */
+void removeBinaryTree(BinaryTree* bt, Job* data) {
+    JobArrayList* jal = getListFromTree(bt);
+    int len = jal->length;
+    removeDataFromJAL(jal, data);
+
+    if (len == jal->length) return; // Don't remake the whole tree if the job was not found in the list
+
+    if (bt->root != NULL) deleteNodeShallow(bt->root);
+
+    bt->root = NULL;
+    bt->height = 0;
+    bt->size = 0;
+
+    for (int i = 0; i < jal->length; i++) {
+        insertInBinaryTree(bt, getJAL(jal, i));
+    }
+
+    deleteJobArrayListShallow(jal);
+}
+
 Job* getJobByTitle(BinaryTree* bt, char* jobTitle) {
     if (bt->root == NULL) return NULL;
 

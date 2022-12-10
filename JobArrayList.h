@@ -66,6 +66,13 @@ void setJAL(JobArrayList *arr, Job* data, int index);
 void removeFromJAL(JobArrayList *arr, int index);
 
 /**
+ * Removes the element that matches the provided job, if found
+ * @param arr The list
+ * @param data The job to remove
+ */
+void removeDataFromJAL(JobArrayList *arr, Job* data);
+
+/**
  * Prints the list to the screen
  * @param arr The list
  */

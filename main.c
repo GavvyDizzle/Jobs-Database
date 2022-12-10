@@ -161,7 +161,7 @@ void runListCommand(char cmd) {
  * Adds a job to the database given user input
  */
 void runAddCommand() {
-    char input[256];
+    char* input = malloc(sizeof(char) * 256);
     Job *job = createJob();
 
     printf("Enter job title: ");
@@ -173,6 +173,7 @@ void runAddCommand() {
     job->jobTitle = input;
 
     printf("Enter company name: ");
+    input = malloc(sizeof(char) * 256);
     gets(input);
     while (strlen(input) == 0) {
         printf("Invalid company name. Enter another: ");
@@ -180,7 +181,17 @@ void runAddCommand() {
     }
     job->companyName = input;
 
+    printf("Enter contact email: ");
+    input = malloc(sizeof(char) * 256);
+    gets(input);
+    while (strlen(input) == 0) {
+        printf("Invalid email. Enter another: ");
+        gets(input);
+    }
+    job->email = input;
+
     printf("Enter location: ");
+    input = malloc(sizeof(char) * 256);
     gets(input);
     while (strlen(input) == 0) {
         printf("Invalid location. Enter another: ");
@@ -189,6 +200,7 @@ void runAddCommand() {
     job->city = input;
 
     printf("Enter state abbreviation: ");
+    input = malloc(sizeof(char) * 16);
     gets(input);
     while (strlen(input) != 2) {
         printf("Invalid state abbreviation. Enter another: ");
@@ -198,6 +210,7 @@ void runAddCommand() {
 
     // There is no error catching for the salary range. Instead, default values will be put int the case of invalid input(s)
     printf("Enter salary range (x y): ");
+    input = malloc(sizeof(char) * 256);
     gets(input);
     StringArrayList *arr = getSpaceSeparatedArrayList(input);
     int a = 0;
@@ -211,8 +224,10 @@ void runAddCommand() {
     }
     job->minSalary = a;
     job->maxSalary = b;
+    deleteStringArrayListDeep(arr);
 
     printf("Enter industry: ");
+    input = malloc(sizeof(char) * 256);
     gets(input);
     while (strlen(input) == 0) {
         printf("Invalid industry. Enter another: ");
@@ -221,22 +236,22 @@ void runAddCommand() {
     job->industry = input;
 
     printf("Enter required skills(s): ");
+    input = malloc(sizeof(char) * 256);
     gets(input);
     while (strlen(input) == 0) {
         printf("Invalid required skills. You must list one. Enter again: ");
         gets(input);
     }
-    getCommaSeparatedArrayList(input);
-    job->requiredSkills = arr;
+    job->requiredSkills = getCommaSeparatedArrayList(input);;
 
     printf("Enter desired skills(s): ");
+    input = malloc(sizeof(char) * 256);
     gets(input);
     while (strlen(input) == 0) {
         printf("Invalid desired skills. You must list one. Enter again: ");
         gets(input);
     }
-    getCommaSeparatedArrayList(input);
-    job->desiredSkills = arr;
+    job->desiredSkills = getCommaSeparatedArrayList(input);;
 
     printf("\n----------(Add your job? (y/n) )----------\n");
     printJob(job);
@@ -249,8 +264,8 @@ void runAddCommand() {
     }
 
     if (input[0] == 'y') {
-        printf("Your job has been successfully added to the database/n");
-        //TODO - Add job to all structures
+        printf("Your job has been successfully added to the database\n");
+        addNewJob(bt, job);
     }
     else {
         printf("Job not added/n");
@@ -295,7 +310,7 @@ void runModifyCommand() {
     else if (ll->length != 1) {
         printf("----------------------------------------\n");
         printf("Your job search returned %d results!\n", ll->length);
-        printf("Only a single job can be modified at a time.");
+        printf("Only a single job can be modified at a time.\n");
         printf("----------------------------------------\n");
         deleteLinkedList(ll);
         return;
@@ -324,56 +339,83 @@ void runModifyCommand() {
     copy->jobTitle = mod->jobTitle;
     copy->companyName = mod->companyName;
     copy->industry = mod->industry;
+    copy->email = mod->email;
+
+    printf("Leaving a line blank will not modify that field of the job\n");
+    char* input2 = malloc(sizeof(char) * 256);
 
     printf("Enter location: ");
-    gets(input);
-    while (strlen(input) == 0) {
-        printf("Invalid location. Enter another: ");
-        gets(input);
+    gets(input2);
+    if (strlen(input2) == 0) {
+        free(input2);
+        copy->city = mod->city;
     }
-    copy->city = input;
+    else {
+        copy->city = input2;
+    }
 
     printf("Enter state abbreviation: ");
-    gets(input);
-    while (strlen(input) != 2) {
+    input2 = malloc(sizeof(char) * 16);
+    gets(input2);
+    while (strlen(input2) != 2 && strlen(input2) != 0) {
         printf("Invalid state abbreviation. Enter another: ");
-        gets(input);
+        gets(input2);
     }
-    copy->state = input;
+    if (strlen(input2) == 0) {
+        free(input2);
+        copy->state = mod->state;
+    }
+    else {
+        copy->state = input2;
+    }
 
     // There is no error catching for the salary range. Instead, default values will be put int the case of invalid input(s)
     printf("Enter salary range (x y): ");
-    gets(input);
-    StringArrayList *arr = getSpaceSeparatedArrayList(input);
-    int a = 0;
-    int b = 1000000000;
+    input2 = malloc(sizeof(char) * 256);
+    gets(input2);
 
-    if (getSAL(arr, 0) != NULL) {
-        a = (int) strtol(getSAL(arr, 0), NULL, 0);
+    if (strlen(input2) == 0) {
+        free(input2);
+        copy->minSalary = mod->minSalary;
+        copy->maxSalary = mod->maxSalary;
     }
-    if (getSAL(arr, 1) != NULL) {
-        b = (int) strtol(getSAL(arr, 1), NULL, 0);
+    else {
+        StringArrayList *arr = getSpaceSeparatedArrayList(input2);
+        int a = 0;
+        int b = 1000000000;
+
+        if (getSAL(arr, 0) != NULL) {
+            a = (int) strtol(getSAL(arr, 0), NULL, 0);
+        }
+        if (getSAL(arr, 1) != NULL) {
+            b = (int) strtol(getSAL(arr, 1), NULL, 0);
+        }
+        copy->minSalary = a;
+        copy->maxSalary = b;
+        deleteStringArrayListDeep(arr);
     }
-    copy->minSalary = a;
-    copy->maxSalary = b;
 
     printf("Enter required skills(s): ");
-    gets(input);
-    while (strlen(input) == 0) {
-        printf("Invalid required skills. You must list one. Enter again: ");
-        gets(input);
+    input2 = malloc(sizeof(char) * 256);
+    gets(input2);
+    if (strlen(input2) == 0) {
+        copy->requiredSkills = mod->requiredSkills;
+        free(input2);
     }
-    getCommaSeparatedArrayList(input);
-    copy->requiredSkills = arr;
+    else {
+        copy->requiredSkills = getCommaSeparatedArrayList(input2);
+    }
 
     printf("Enter desired skills(s): ");
-    gets(input);
-    while (strlen(input) == 0) {
-        printf("Invalid desired skills. You must list one. Enter again: ");
-        gets(input);
+    input2 = malloc(sizeof(char) * 256);
+    gets(input2);
+    if (strlen(input2) == 0) {
+        copy->desiredSkills = mod->desiredSkills;
+        free(input2);
     }
-    getCommaSeparatedArrayList(input);
-    copy->desiredSkills = arr;
+    else {
+        copy->desiredSkills = getCommaSeparatedArrayList(input2);
+    }
 
     printf("\n----------(Modify your job? (y/n) )----------\n");
     printJob(copy);
@@ -387,22 +429,25 @@ void runModifyCommand() {
 
     if (input[0] == 'y') {
         printf("Your job has been successfully modified in the database\n");
+        if (mod->city != copy->city) free(mod->city);
         mod->city = copy->city;
+        if (mod->state != copy->state) free(mod->state);
         mod->state = copy->state;
         mod->minSalary = copy->minSalary;
         mod->maxSalary = copy->maxSalary;
+        if (mod->requiredSkills != copy->requiredSkills) deleteStringArrayList(mod->requiredSkills);
         mod->requiredSkills = copy->requiredSkills;
+        if (mod->desiredSkills != copy->desiredSkills) deleteStringArrayList(mod->desiredSkills);
         mod->desiredSkills = copy->desiredSkills;
 
-        //TODO - Update job all structures
-        //TODO - Make sure frees work ok here
+        modifyJob(bt, mod);
     }
     else {
         printf("Job modification cancelled\n");
     }
 
     deleteLinkedList(ll);
-    deleteJob(copy);
+    free(copy);
 }
 
 /**
@@ -476,7 +521,7 @@ void runRemoveCommand() {
 
     if (input[0] == 'y') {
         printf("Job successfully deleted\n");
-        //TODO - Remove job from all structures
+        removeJob(bt, rem);
     }
     else {
         printf("Deletion cancelled\n");

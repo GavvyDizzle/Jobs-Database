@@ -107,6 +107,28 @@ void insertAtIndexLinkedList(LinkedList *ll, Job *data, int index) {
 }
 
 /**
+ * Loops through all elements to place this one in the correct spot in the list
+ */
+void insertInOrderLinkedList(LinkedList *ll, Job *data) {
+    Node *curr = ll->head;
+    for (int i = 0; i < ll->length - 1; i++) {
+        if (compareJobs(data, curr->data) < 0) {
+            insertAtIndexLinkedList(ll, data, i); // Places the job before current node if it is less than curr
+            return;
+        }
+    }
+    insertLinkedList(ll, data); // Puts the job as the tail if it is greater than all others
+}
+
+/**
+ * Removes this element from the list then places it correctly using the add insertInOrder method
+ */
+void modifyElementLinkedList(LinkedList *ll, Job *data) {
+    removeDataFromLinkedList(ll, data);
+    insertInOrderLinkedList(ll, data);
+}
+
+/**
  * Removes the Job at the given index.
  * If the index if out of bounds, nothing will be removed.
  */

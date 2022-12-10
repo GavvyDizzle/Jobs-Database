@@ -33,6 +33,27 @@ LinkedList* getJobLinkedList(BinaryTree *bt);
 void loadJobs(BinaryTree *bt);
 
 /**
+ * Adds a new job to all indexing structures
+ * @param bt The tree to add to
+ * @param j The job to add
+ */
+void addNewJob(BinaryTree* bt, Job* j);
+
+/**
+ * Updates all indexing structures ordering
+ * @param bt The tree to modify
+ * @param j The already modified job
+ */
+void modifyJob(BinaryTree* bt, Job* j);
+
+/**
+ * Removes a job from all indexing structures
+ * @param bt The tree to remove from
+ * @param j The job to remove
+ */
+void removeJob(BinaryTree* bt, Job* j);
+
+/**
  * Creates an ArrayList from a char* of comma separated values
  * @param str The string to read
  * @return An ArrayList

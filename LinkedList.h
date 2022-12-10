@@ -51,6 +51,20 @@ void insertLinkedList(LinkedList *ll, Job *data);
 void insertAtIndexLinkedList(LinkedList *ll, Job *data, int index);
 
 /**
+ * Inserts an element in the list sorted correctly
+ * @param ll The list
+ * @param data The element to add
+ */
+void insertInOrderLinkedList(LinkedList *ll, Job *data);
+
+/**
+ * Places an element into its correct sorted position
+ * @param ll The list
+ * @param data The element to move
+ */
+void modifyElementLinkedList(LinkedList *ll, Job *data);
+
+/**
  * Removes the element at the given index
  * @param ll The list
  * @param index The index
