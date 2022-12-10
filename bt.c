@@ -121,11 +121,7 @@ void removeBinaryTree(BinaryTree* bt, Job* data) {
 }
 
 /**
- * Prints out the binary tree using the following format (spaces indicate no node)
- * 0
- * 1-2
- * 3-4-5-6
- * 7-8-9- 11-12- -14
+ * Prints out the binary tree by listing all states of the same height on the same line
  */
 void printBinaryTree(BinaryTree* bt) {
     if (bt->root == NULL) {

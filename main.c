@@ -35,6 +35,15 @@ void printSearchMessage(LinkedList *ll) {
     else printValidSearchMessage(ll);
 }
 
+bool isValidYesNoInput(char* input) {
+    if (strlen(input) != 1) return false;
+
+    return input[0] == 'y' ||
+            input[0] == 'Y' ||
+            input[0] == 'n' ||
+            input[0] == 'N';
+}
+
 /**
  * Handles when the search command is run.
  * Asks the user for input for each of the Job criteria.
@@ -258,17 +267,18 @@ void runAddCommand() {
     printf("--------------------------------------------\n");
 
     gets(input);
-    while(strlen(input) != 1 && input[0] != 'y' && input[0] != 'n') {
+    while(!isValidYesNoInput(input)) {
         printf("Invalid response (y/n): ");
         gets(input);
     }
 
-    if (input[0] == 'y') {
+    if (input[0] == 'y' || input[0] == 'Y') {
         printf("Your job has been successfully added to the database\n");
         addNewJob(bt, job);
     }
     else {
-        printf("Job not added/n");
+        printf("Job not added\n");
+        deleteJob(job);
     }
 }
 
@@ -324,12 +334,12 @@ void runModifyCommand() {
     printf("------------------------------------------------\n");
 
     gets(input);
-    while(strlen(input) != 1 && input[0] != 'y' && input[0] != 'n') {
+    while(!isValidYesNoInput(input)) {
         printf("Invalid response (y/n): ");
         gets(input);
     }
 
-    if (input[0] == 'n') {
+    if (input[0] == 'n' || input[0] == 'N') {
         printf("Modification cancelled\n");
         return;
     }
@@ -422,12 +432,12 @@ void runModifyCommand() {
     printf("--------------------------------------------\n");
 
     gets(input);
-    while(strlen(input) != 1 && input[0] != 'y' && input[0] != 'n') {
+    while(!isValidYesNoInput(input)) {
         printf("Invalid response (y/n): ");
         gets(input);
     }
 
-    if (input[0] == 'y') {
+    if (input[0] == 'y' || input[0] == 'Y') {
         printf("Your job has been successfully modified in the database\n");
         if (mod->city != copy->city) free(mod->city);
         mod->city = copy->city;
@@ -435,15 +445,19 @@ void runModifyCommand() {
         mod->state = copy->state;
         mod->minSalary = copy->minSalary;
         mod->maxSalary = copy->maxSalary;
-        if (mod->requiredSkills != copy->requiredSkills) deleteStringArrayList(mod->requiredSkills);
+        if (mod->requiredSkills != copy->requiredSkills) deleteStringArrayListDeep(mod->requiredSkills);
         mod->requiredSkills = copy->requiredSkills;
-        if (mod->desiredSkills != copy->desiredSkills) deleteStringArrayList(mod->desiredSkills);
+        if (mod->desiredSkills != copy->desiredSkills) deleteStringArrayListDeep(mod->desiredSkills);
         mod->desiredSkills = copy->desiredSkills;
 
         modifyJob(bt, mod);
     }
     else {
         printf("Job modification cancelled\n");
+        if (mod->city != copy->city) free(copy->city);
+        if (mod->state != copy->state) free(copy->state);
+        if (mod->requiredSkills != copy->requiredSkills) deleteStringArrayListDeep(copy->requiredSkills);
+        if (mod->desiredSkills != copy->desiredSkills) deleteStringArrayListDeep(copy->desiredSkills);
     }
 
     deleteLinkedList(ll);
@@ -500,7 +514,7 @@ void runRemoveCommand() {
     else if (ll->length != 1) {
         printf("----------------------------------------\n");
         printf("Your job search returned %d results!\n", ll->length);
-        printf("Only a single job can be removed at a time.");
+        printf("Only a single job can be removed at a time.\n");
         printf("----------------------------------------\n");
         deleteLinkedList(ll);
         return;
@@ -514,12 +528,12 @@ void runRemoveCommand() {
     printf("------------------------------------------------\n");
 
     gets(input);
-    while(strlen(input) != 1 && input[0] != 'y' && input[0] != 'n') {
+    while(!isValidYesNoInput(input)) {
         printf("Invalid response (y/n): ");
         gets(input);
     }
 
-    if (input[0] == 'y') {
+    if (input[0] == 'y' || input[0] == 'Y') {
         printf("Job successfully deleted\n");
         removeJob(bt, rem);
     }
