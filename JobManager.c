@@ -181,7 +181,9 @@ void loadJobs(BinaryTree *bt) {
     loadJobIndexes(bt);
 }
 
-// Finds indexing lists to add to then places the new job in order
+/**
+ * Finds indexing lists to add to then places the new job in order
+ */
 void addNewJob(BinaryTree* bt, Job* j) {
     insertInBinaryTree(bt, j);
 
@@ -206,7 +208,9 @@ void addNewJob(BinaryTree* bt, Job* j) {
     if (stristr(j->jobTitle, "data") != NULL) insertInOrderLinkedList(dataJobTitleIndex,j);
 }
 
-// Finds indexing lists to modify then handles modification
+/**
+ * Finds indexing lists to modify then handles modification
+ */
 void modifyJob(BinaryTree* bt, Job* j) {
     modifyElementBinaryTree(bt, j);
 
@@ -231,7 +235,10 @@ void modifyJob(BinaryTree* bt, Job* j) {
     if (stristr(j->jobTitle, "data") != NULL) modifyElementLinkedList(dataJobTitleIndex,j);
 }
 
-// Only need to remove the job because order will be preserved
+/**
+ * Only need to remove the job because order will be preserved.
+ * Deletes the job when done
+ */
 void removeJob(BinaryTree* bt, Job* j) {
     removeBinaryTree(bt, j);
 

@@ -25,9 +25,9 @@ void deleteQueue(BTNodeQueue* queue);
 /**
  * Inserts a job to the end of the queue
  * @param queue The queue
- * @param job The job to add
+ * @param data The node to add
  */
-void insertQueue(BTNodeQueue* queue, BTNode* job);
+void insertQueue(BTNodeQueue* queue, BTNode* data);
 
 /**
  * Removes the first job in the queue

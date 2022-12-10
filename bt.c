@@ -87,71 +87,8 @@ void modifyElementBinaryTree(BinaryTree* bt, Job* data) {
 }
 
 /**
- * Finds the node with the smallest value originating from this node
- *//*
-BTNode* minValueNode(BTNode* node)
-{
-    BTNode* curr = node;
-
-    // loop down to find the leftmost leaf
-    while (curr != NULL && curr->left != NULL) {
-        curr = curr->left;
-    }
-
-    return curr;
-}
-
-*//**
- * Removes the job from the tree and handles all balancing
- *//*
-BTNode* removeNode(BTNode* root, Job* data) {
-    // base case
-    if (root == NULL)
-        return root;
-
-    // If the key to be deleted
-    // is smaller than the root's
-    // key, then it lies in left subtree
-    if (compareJobsByState(data, root->data) < 0)
-        root->left = removeNode(root->left, data);
-
-        // If the key to be deleted
-        // is greater than the root's
-        // key, then it lies in right subtree
-    else if (compareJobsByState(data, root->data))
-        root->right = removeNode(root->right, data);
-
-        // if key is same as root's key,
-        // then This is the node
-        // to be deleted
-    else {
-        // node with only one child or no child
-        if (root->left == NULL) {
-            BTNode* temp = root->right;
-            free(root);
-            return temp;
-        }
-        else if (root->right == NULL) {
-            BTNode* temp = root->left;
-            free(root);
-            return temp;
-        }
-
-        // node with two children:
-        // Get the inorder successor
-        // (smallest in the right subtree)
-        BTNode* temp = minValueNode(root->right);
-
-        // successor's content to this node
-        root->data = temp->data;
-
-        // Delete the inorder successor
-        root->right = removeNode(root->right, temp->data);
-    }
-    return root;
-}*/
-
- // Frees BTNodes without deleting the job
+ * Frees BTNodes without deleting the job
+ */
 void deleteNodeShallow(BTNode* node) {
    if (node->left != NULL) deleteNodeShallow(node->left);
    if (node->right != NULL) deleteNodeShallow(node->right);
@@ -181,33 +118,6 @@ void removeBinaryTree(BinaryTree* bt, Job* data) {
     }
 
     deleteJobArrayListShallow(jal);
-}
-
-Job* getJobByTitle(BinaryTree* bt, char* jobTitle) {
-    if (bt->root == NULL) return NULL;
-
-    BTNodeQueue* queue = createQueue();
-    insertQueue(queue, bt->root);
-
-    bool foundMatch = false;
-    BTNode* popped;
-    while (!isQueueEmpty(queue)) {
-        popped = popQueue(queue);
-        if (strcasecmp(popped->data->jobTitle, jobTitle) == 0) {
-            foundMatch = true;
-            break;
-        }
-
-        insertQueue(queue, popped->left);
-        insertQueue(queue, popped->right);
-    }
-
-    deleteQueue(queue);
-
-    if (foundMatch) {
-        return popped->data;
-    }
-    return NULL;
 }
 
 /**
@@ -254,6 +164,9 @@ bool isLeaf(BTNode* node) {
     return node->left == NULL && node->right == NULL;
 }
 
+/**
+ * Copies the jobs from nodes to a list in level order
+ */
 JobArrayList* getListFromTree(BinaryTree* bt) {
     JobArrayList* jal = createJobArrayList();
     if (bt->root == NULL) return jal;
@@ -274,6 +187,9 @@ JobArrayList* getListFromTree(BinaryTree* bt) {
     return jal;
 }
 
+/**
+ * Copies the jobs from nodes to a list then sorts them
+ */
 JobArrayList* getSortedListFromTree(BinaryTree* bt) {
     JobArrayList* jal = getListFromTree(bt);
     sortJAL(jal);

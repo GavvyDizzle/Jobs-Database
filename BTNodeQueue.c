@@ -9,7 +9,9 @@ BTNodeQueue* createQueue() {
     return queue;
 }
 
-// Only pointers to existing jobs are added, so the individual jobs do not need to be freed
+/**
+ * Only pointers to existing jobs are added, so the individual jobs do not need to be freed
+ */
 void deleteQueue(BTNodeQueue* queue) {
     free(queue->arr);
     free(queue);
@@ -18,12 +20,14 @@ void deleteQueue(BTNodeQueue* queue) {
 /**
  * Doubles the size of the ArrayList so it can hold more elements
  */
-void doubleSizeQueue(BTNodeQueue *queue) {
+void doubleSizeQueue(BTNodeQueue* queue) {
     queue->queueSize *= 2;
     queue->arr = realloc(queue->arr, sizeof(BTNode) * queue->queueSize);
 }
 
-// Inserts jobs at the back of the array if the node is non-null
+/**
+ * Inserts jobs at the back of the array if the node is non-null
+ */
 void insertQueue(BTNodeQueue* queue, BTNode* data) {
     if (data == NULL) return;
 
@@ -37,7 +41,9 @@ void insertQueue(BTNodeQueue* queue, BTNode* data) {
     queue->length++;
 }
 
-// Removes the first job and sets the head to the second node, if present
+/**
+ * Removes the first job and sets the head to the second node, if present
+ */
 BTNode* popQueue(BTNodeQueue* queue) {
     if (queue->length <= 0) return NULL;
 
